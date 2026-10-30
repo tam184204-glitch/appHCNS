@@ -1,0 +1,5 @@
+{ "name": "app-hcns", "version": "1.0.0", "private": true,
+  "description": "CTG-HCNS — Quản trị Hành chính Nhân sự Cát Tường (53 biểu mẫu đầu vào, 23 đầu ra, 6 dashboard)",
+  "main": "server/server.js",
+  "scripts": { "start": "node server/server.js", "seed": "node server/seed.js", "seed:demo": "node server/seed.js --demo", "clear-demo": "node server/seed.js --clear-demo", "test": "node test/api-test.js" },
+  "dependencies": { "busboy": "^1.6.0", "pg": "^8.23.1" } }

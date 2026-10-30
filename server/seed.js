@@ -164,7 +164,7 @@ async function real() {
 // ---------- dữ liệu mẫu: mọi bản ghi is_demo = true, xóa được 1 chạm ----------
 async function clearDemo() {
   for (const e of Object.values(E).reverse()) await q(`DELETE FROM ${e.table} WHERE is_demo`).catch(err => console.log(e.key, err.message));
-  await q('DELETE FROM hr_approval WHERE is_demo'); await q('DELETE FROM hr_audit WHERE is_demo'); await q('DELETE FROM hr_job');
+  await q('DELETE FROM hr_approval WHERE is_demo'); await q('DELETE FROM hr_audit WHERE is_demo'); await q("DELETE FROM hr_payroll WHERE status = 'nhap'"); await q("DELETE FROM hr_job WHERE name = 'nhap_luong'");
 }
 async function demo() {
   await clearDemo();

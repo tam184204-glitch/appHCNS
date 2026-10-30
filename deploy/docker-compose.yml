@@ -1,0 +1,38 @@
+# Chạy trên VPS tại /opt/hcns: app + PostgreSQL riêng, không mở cổng ra ngoài; ctg_nginx vào qua mạng ctg_net.
+services:
+  hcns_db:
+    image: postgres:17-alpine
+    container_name: hcns_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ctg_hcns
+      POSTGRES_USER: hr_app
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /opt/hcns/pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hr_app -d ctg_hcns"]
+      interval: 5s
+      retries: 20
+    networks: [hcns_internal]
+  hcns_app:
+    build:
+      context: ./src
+      dockerfile: deploy/Dockerfile
+    container_name: hcns_app
+    restart: unless-stopped
+    depends_on:
+      hcns_db:
+        condition: service_healthy
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3600
+      DATABASE_URL: postgres://hr_app:${DB_PASSWORD}@hcns_db:5432/ctg_hcns
+      DEFAULT_PW: ${DEFAULT_PW}
+    volumes:
+      - /opt/hcns/src/data:/app/data
+    networks: [hcns_internal, ctg_net]
+networks:
+  hcns_internal:
+  ctg_net:
+    external: true

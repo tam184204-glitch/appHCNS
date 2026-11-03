@@ -11,7 +11,8 @@ const { E, CAND } = require('./meta');
 const C = require('./core');
 const B = require('./biz');
 
-const S = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'seed', 'source.json'), 'utf8'));
+const SRC = ['source.json', 'source.sample.json'].map(f => path.join(__dirname, '..', 'data', 'seed', f)).find(f => fs.existsSync(f)); // không có dữ liệu thật thì nạp dữ liệu giả
+const S = JSON.parse(fs.readFileSync(SRC, 'utf8'));
 const hashPw = pw => { const salt = crypto.randomBytes(16).toString('hex'); return salt + ':' + crypto.scryptSync(pw, salt, 32).toString('hex'); };
 const ins = async (t, o) => { const k = Object.keys(o); return (await one(`INSERT INTO ${t} (${k.join(',')}) VALUES (${k.map((_, i) => '$' + (i + 1)).join(',')}) RETURNING id`, k.map(x => o[x] !== null && typeof o[x] === 'object' ? JSON.stringify(o[x]) : o[x]))).id; };
 const upsert = async (t, key, o) => { const r = await one(`SELECT id FROM ${t} WHERE ${key} = $1`, [o[key]]); if (r) return r.id; return ins(t, o); };

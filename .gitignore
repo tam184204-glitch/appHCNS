@@ -1,6 +1,9 @@
 node_modules/
 .env
-data/
+data/seed/source.json
+data/files/
 *.log
 docs/
 demo/source.demo.json
+data/templates/*
+!data/templates/.gitkeep
